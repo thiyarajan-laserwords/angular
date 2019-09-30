@@ -7,17 +7,17 @@ export class UserController {
 
     }
     //to register new users
-    static registerUser(req, res){
+    static create(req, res){
         let userData = req.body;
         if(userData){
-            var user = new User(userData);
-            user.save(function(err){
-                if(!err) {
-                    db.users.save(user);
-                    return res.status(201).send({status:201, message: 'user added successfully'});
-                }
+            const user = new User(userData);
+            const err = user.validateSync();
+            if(err){
                 return res.status(500).send({status: 500, message: err.message});
-            });
+            }else{
+                db.users.save(user);
+                return res.status(201).send({status:201, message: 'user added successfully'});
+            }
         }
     }
 

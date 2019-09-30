@@ -8,22 +8,33 @@ import { UserController } from './app/controller/UserController';
 const app = express();
 const PORT = 5000;
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-app.use(express.static(__dirname));
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+initilization();
 
-//db setup
-db.connect( '../db');
-db.loadCollections(['users']);
+function initilization(){
+    app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        next();
+    });
+    app.use(express.static(__dirname));
+    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(bodyParser.json());
+    dbSetup();
+}
+function dbSetup(){
+    //db setup
+    db.connect( '../db');
+    db.loadCollections(['users']);
+    apis();
+}
 
-//apis
-app.post('/login', UserController.login);
-app.post('/register', UserController.registerUser);
+
+
+function apis(){
+    //apis
+    app.post('/login', UserController.login);
+    app.post('/register', UserController.create);
+}
 
 //server starting...
 app.listen(PORT, ()=>{

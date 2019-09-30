@@ -6,11 +6,11 @@ const userSchema = new mongoose.Schema({
     middlename: {type: String, default: ''},
     lastname: {type: String, required: [true, 'Required Field']},
     email: {type: String, required: [true, 'Required Field'], index: true},
-    phoneNumber: {type: String},
-    gender: {type: String, enum: ['male', 'female'], required: [true, 'Required Field']},
-    city: {type: String, required: [true, 'Required Field']},
-    country: {type: String, required: [true, 'Required Field']},
-    role: {type: String, enum: ['admin', 'visitor'], required: [true, 'Required Field']}
-});
+    phoneNumber: {type: String, default: ''},
+    gender: {type: String, enum: ['male', 'female'], default: 'male'},
+    city: {type: String, default: ''},
+    country: {type: String, default: ''},
+    role: {type: String, enum: ['admin', 'visitor'], default: 'visitor'}
+},{timestamps: true});
 
 export default mongoose.model('User', userSchema);
