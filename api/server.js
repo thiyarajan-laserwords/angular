@@ -2,6 +2,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import db from 'diskdb';
 
+import { UserController } from './app/controller/UserController';
+
+
 const app = express();
 const PORT = 5000;
 
@@ -14,32 +17,13 @@ app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-//db connection
-
+//db setup
 db.connect( '../db');
 db.loadCollections(['users']);
 
 //apis
-app.post('/login', (req, res) =>{
-   if(req.body){
-       let userData = db.users.find({username: req.body.username, password: req.body.password})
-       if(userData.length > 0){
-           res.status(201).send({message: 'login success'});
-       }
-       if(userData.length === 0){
-           res.status(404).send({message: 'No data found'});
-       }
-   }
-});
-
-app.post('/register', (req, res) =>{
-    let userData = req.body;
-    if(userData){
-        db.users.save(userData);
-        res.status(201).send({message: 'user added successfully'});
-    }
-    res.status(400).send({ message: 'Incorrect username and password' });
-});
+app.post('/login', UserController.login);
+app.post('/register', UserController.registerUser);
 
 //server starting...
 app.listen(PORT, ()=>{
