@@ -1,12 +1,13 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import db from 'diskdb';
+import config from './config';
 
 import { UserController } from './app/controller/UserController';
 
 
 const app = express();
-const PORT = 5000;
+const PORT = config.port;
 
 initilization();
 

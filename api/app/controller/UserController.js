@@ -1,5 +1,7 @@
-import User  from '../model/user';
+import User from '../model/user';
 import db from "diskdb";
+import jwt from "jsonwebtoken";
+import config from "../../config";
 
 export class UserController {
 
@@ -24,12 +26,20 @@ export class UserController {
     //login functionality
     static login(req, res){
         if(req.body){
-            let userData = db.users.find({username: req.body.username, password: req.body.password})
-            if(userData.length > 0){
-                res.status(201).send({message: 'login success'});
+            let userData = db.users.findOne({username: req.body.username, password: req.body.password});
+            console.log(userData);
+            if(userData){
+                userData.authToken = jwt.sign({
+                    email: userData.email,
+                    password: userData.password
+                }, config.secret, {
+                    expiresIn: 360
+                })
+                res.status(201).send({message: 'login success',
+                                        data: userData});
             }
             if(userData.length === 0){
-                res.status(404).send({message: 'No data found'});
+                res.status(404).send({message: 'Check username and password'});
             }
         }
     }
